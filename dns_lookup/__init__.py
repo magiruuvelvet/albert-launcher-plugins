@@ -30,6 +30,8 @@ def handleQuery(albertQuery: Query) -> list[Item]:
 
     info("DNS: " + query[0] + " " + query[1]);
 
+    albertQuery.disableSort();
+
     try:
         results = dns.resolver.resolve(query[1], query[0]);
         albertItems = [];

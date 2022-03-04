@@ -40,6 +40,8 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     # parse query
     query = parse(albertQuery.string);
 
+    albertQuery.disableSort();
+
     albertItems = [];
 
     for i in query_interface_ips(query):
