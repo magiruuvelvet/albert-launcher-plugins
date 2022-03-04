@@ -10,6 +10,8 @@ __version__ = "0.0.1";
 __triggers__ = "dns ";
 __authors__ = "マギルゥーベルベット";
 
+iconPath = iconLookup("internet-services");
+
 def parse(query: str) -> list[str]:
     query = query.split(maxsplit=1);
     if len(query) != 2:
@@ -35,7 +37,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
         for res in results:
             item = Item(
                 id=__title__,
-                #icon=iconPath,
+                icon=iconPath,
                 subtext="DNS: " + query[0] + " " + query[1],
                 text=res.to_text(),
                 completion=__triggers__,
@@ -52,7 +54,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
         return [
             Item(
                 id=__title__,
-                #icon=iconPath,
+                icon=iconPath,
                 subtext="DNS: " + query[0] + " " + query[1],
                 text="No such record",
                 completion=__triggers__,
@@ -66,7 +68,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
         return [
             Item(
                 id=__title__,
-                #icon=iconPath,
+                icon=iconPath,
                 subtext="DNS: " + query[0] + " " + query[1],
                 text="NXDOMAIN",
                 completion=__triggers__,
