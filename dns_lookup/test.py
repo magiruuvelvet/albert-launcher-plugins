@@ -10,3 +10,5 @@ except dns.resolver.NXDOMAIN:
     print("NXDOMAIN");
 except dns.rdatatype.UnknownRdatatype:
     print("Invalid DNS Type");
+
+print(dns.reversename.from_address("1.1.1.1"));

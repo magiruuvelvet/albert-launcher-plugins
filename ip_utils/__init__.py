@@ -45,7 +45,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     albertItems = [];
 
     for i in query_interface_ips(query):
-        item = Item(
+        albertItems.append(Item(
             id=__title__,
             icon=iconPath,
             subtext=i[1],
@@ -55,7 +55,6 @@ def handleQuery(albertQuery: Query) -> list[Item]:
             actions=[
                 ClipAction(text="ClipAction", clipboardText=i[1])
             ]
-        );
-        albertItems.append(item);
+        ));
 
     return albertItems;

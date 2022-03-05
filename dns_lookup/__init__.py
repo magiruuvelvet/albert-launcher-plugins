@@ -5,6 +5,10 @@
 from albert import *;
 import dns.resolver;
 
+import os;
+from pydoc import importfile;
+module_path = os.path.realpath(os.path.dirname(__file__));
+
 __title__ = "DNS Lookup";
 __version__ = "0.0.1";
 __triggers__ = "dns ";
@@ -28,8 +32,6 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     if len(query) == 0:
         return [];
 
-    info("DNS: " + query[0] + " " + query[1]);
-
     albertQuery.disableSort();
 
     try:
@@ -37,7 +39,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
         albertItems = [];
 
         for res in results:
-            item = Item(
+            albertItems.append(Item(
                 id=__title__,
                 icon=iconPath,
                 subtext="DNS: " + query[0] + " " + query[1],
@@ -45,10 +47,9 @@ def handleQuery(albertQuery: Query) -> list[Item]:
                 completion=__triggers__,
                 urgency=ItemBase.Normal,
                 actions=[
-                    ClipAction(text="ClipAction", clipboardText=res.to_text())
+                    ClipAction(text="ClipAction", clipboardText=res.to_text()),
                 ]
-            );
-            albertItems.append(item);
+            ));
 
         return albertItems;
 
@@ -62,7 +63,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
                 completion=__triggers__,
                 urgency=ItemBase.Normal,
                 actions=[
-                    ClipAction(text="ClipAction", clipboardText="No such record")
+                    ClipAction(text="ClipAction", clipboardText="No such record"),
                 ]
             )
         ];
@@ -76,7 +77,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
                 completion=__triggers__,
                 urgency=ItemBase.Normal,
                 actions=[
-                    ClipAction(text="ClipAction", clipboardText="NXDOMAIN")
+                    ClipAction(text="ClipAction", clipboardText="NXDOMAIN"),
                 ]
             )
         ];
