@@ -34,50 +34,58 @@ def handleQuery(albertQuery: Query) -> list[Item]:
 
     albertQuery.disableSort();
 
+    domain = query[1];
+    rtype = query[0];
+
+    subtext = "DNS: " + rtype + " " + domain;
+
     try:
-        results = dns.resolver.resolve(query[1], query[0]);
+        results = dns.resolver.resolve(domain, rtype);
         albertItems = [];
 
         for res in results:
+            dns_rec_text = res.to_text();
             albertItems.append(Item(
                 id=__title__,
                 icon=iconPath,
-                subtext="DNS: " + query[0] + " " + query[1],
-                text=res.to_text(),
-                completion=__triggers__,
+                subtext=subtext,
+                text=dns_rec_text,
+                completion=dns_rec_text,
                 urgency=ItemBase.Normal,
                 actions=[
-                    ClipAction(text="ClipAction", clipboardText=res.to_text()),
+                    ClipAction(text="ClipAction", clipboardText=dns_rec_text),
                 ]
             ));
 
         return albertItems;
 
     except dns.resolver.NoAnswer:
+        dns_rec_text = "No such record";
         return [
             Item(
                 id=__title__,
                 icon=iconPath,
-                subtext="DNS: " + query[0] + " " + query[1],
-                text="No such record",
-                completion=__triggers__,
+                subtext=subtext,
+                text=dns_rec_text,
+                completion=dns_rec_text,
                 urgency=ItemBase.Normal,
                 actions=[
-                    ClipAction(text="ClipAction", clipboardText="No such record"),
+                    ClipAction(text="ClipAction", clipboardText=dns_rec_text),
                 ]
             )
         ];
     except dns.resolver.NXDOMAIN:
+        dns_rec_text = "NXDOMAIN";
         return [
             Item(
                 id=__title__,
                 icon=iconPath,
-                subtext="DNS: " + query[0] + " " + query[1],
-                text="NXDOMAIN",
-                completion=__triggers__,
+                subtext=subtext,
+                text=dns_rec_text,
+                completion=dns_rec_text,
                 urgency=ItemBase.Normal,
                 actions=[
-                    ClipAction(text="ClipAction", clipboardText="NXDOMAIN"),
+                    ClipAction(text="ClipAction", clipboardText=dns_rec_text),
                 ]
             )
         ];
