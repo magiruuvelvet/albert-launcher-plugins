@@ -45,15 +45,18 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     albertItems = [];
 
     for i in query_interface_ips(query):
+        name = i[0];
+        ip = i[1];
+
         albertItems.append(Item(
             id=__title__,
             icon=iconPath,
-            subtext=i[1],
-            text=i[0],
-            completion=__triggers__[0],
+            subtext=ip,
+            text=name,
+            completion=f"{__triggers__[0]} {name}",
             urgency=ItemBase.Normal,
             actions=[
-                ClipAction(text="ClipAction", clipboardText=i[1])
+                ClipAction(text="ClipAction", clipboardText=ip)
             ]
         ));
 
