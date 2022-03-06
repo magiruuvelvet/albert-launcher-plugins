@@ -51,8 +51,8 @@ def initialize():
 
 def find_command(query: str) -> dict:
     for comm in commands:
-        if query.startswith(comm["command"].value):
-            return dict(command=comm["command"], query=query[len(comm["command"].value):].strip());
+        if query.startswith(comm["command"].value + " "):
+            return dict(command=comm["command"], query=query[len(comm["command"].value)+1:].strip());
     return None;
 
 def find_matching_commands(query: str) -> list[Item]:
