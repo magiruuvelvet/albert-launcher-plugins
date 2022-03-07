@@ -1,4 +1,14 @@
 # https://github.com/magiruuvelvet/kiten-albert-integration
 /kiten/
 
+# Python cache
 __pycache__
+
+# plugin user data
+/help/commands.yml
+
+# private plugins (don't commit)
+/mpv/
+
+# 3rd party plugins (don't commit, don't mirror)
+# (nothing yet)
