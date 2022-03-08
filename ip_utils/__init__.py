@@ -56,7 +56,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
             completion=f"{__triggers__[0]} {name}",
             urgency=ItemBase.Normal,
             actions=[
-                ClipAction(text="ClipAction", clipboardText=ip)
+                ClipAction(text="Copy to clipboard", clipboardText=ip)
             ]
         ));
 

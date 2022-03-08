@@ -43,8 +43,8 @@ def handleQuery(albertQuery: Query) -> list[Item]:
             completion=__triggers__,
             urgency=ItemBase.Normal,
             actions=[
-                ClipAction(text="ClipAction", clipboardText=i[0] + " " + i[1]),
-                UrlAction(text="httpstatuses.com", url="https://httpstatuses.com/" + i[0]),
+                ClipAction(text="Copy to clipboard", clipboardText=i[0] + " " + i[1]),
+                UrlAction(text="Open in httpstatuses.com", url="https://httpstatuses.com/" + i[0]),
             ]
         ));
 

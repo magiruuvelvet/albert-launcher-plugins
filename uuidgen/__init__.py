@@ -33,7 +33,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
             completion=generated_uuid,
             urgency=ItemBase.Normal,
             actions=[
-                ClipAction(text="ClipAction", clipboardText=generated_uuid),
+                ClipAction(text="Copy to clipboard", clipboardText=generated_uuid),
             ],
         )
     ];

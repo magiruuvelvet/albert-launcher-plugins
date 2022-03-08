@@ -53,7 +53,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
                 completion=dns_rec_text,
                 urgency=ItemBase.Normal,
                 actions=[
-                    ClipAction(text="ClipAction", clipboardText=dns_rec_text),
+                    ClipAction(text="Copy to clipboard", clipboardText=dns_rec_text),
                 ]
             ));
 
@@ -70,7 +70,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
                 completion=dns_rec_text,
                 urgency=ItemBase.Normal,
                 actions=[
-                    ClipAction(text="ClipAction", clipboardText=dns_rec_text),
+                    ClipAction(text="Copy to clipboard", clipboardText=dns_rec_text),
                 ]
             )
         ];
@@ -85,7 +85,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
                 completion=dns_rec_text,
                 urgency=ItemBase.Normal,
                 actions=[
-                    ClipAction(text="ClipAction", clipboardText=dns_rec_text),
+                    ClipAction(text="Copy to clipboard", clipboardText=dns_rec_text),
                 ]
             )
         ];
