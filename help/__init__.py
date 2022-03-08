@@ -50,6 +50,7 @@ def initialize():
         make_help_item("ip",    "Interface IP Lookup"),
         make_help_item("kiten", "Query Kiten Japanese Dictionary"),
         make_help_item("ps",    "Process Utilities"),
+        make_help_item("pwd",   "Query D-Bus Secret Service API"),
     ];
 
     # additional user commands to show
