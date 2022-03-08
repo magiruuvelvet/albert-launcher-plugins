@@ -9,7 +9,6 @@ __pycache__
 /rdp/config.yml
 
 # private plugins (don't commit)
-/mpv/
 /jira/
 
 # 3rd party plugins (don't commit, don't mirror)
