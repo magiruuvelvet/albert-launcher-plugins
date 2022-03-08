@@ -2,6 +2,12 @@ import secretstorage;
 import subprocess;
 from contextlib import closing;
 
+import os;
+module_path = os.path.realpath(os.path.dirname(__file__));
+clipboard_tool = os.path.join(module_path, "out/bin/clipboard-tool");
+clipboard_tool_args = [clipboard_tool];
+#clipboard_tool_args = ["xclip", "-selection", "clipboard"];
+
 try:
     from albert import critical;
 except ImportError:
@@ -28,9 +34,7 @@ def get_password(item_path: str) -> str:
 def copy(item_path: str) -> None:
     try:
         # FIXME: use libX11 or something else, using subprocess for this is disgusting
-        p = subprocess.Popen([
-            "xclip", "-selection", "clipboard",
-        ], stdin=subprocess.PIPE, close_fds=True);
+        p = subprocess.Popen(clipboard_tool_args, stdin=subprocess.PIPE, close_fds=True);
         p.communicate(input=get_password(item_path));
 
     except OSError as e: # dbus connection lost (get_password) or Popen failed

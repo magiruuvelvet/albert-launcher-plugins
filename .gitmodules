@@ -1,0 +1,3 @@
+[submodule "lib/cmake/modules"]
+	path = lib/cmake/modules
+	url = https://github.com/magiruuvelvet/shared-cmake-modules.git
