@@ -52,6 +52,7 @@ def initialize():
         make_help_item("ps",    "Process Utilities"),
         make_help_item("pwd",   "Query D-Bus Secret Service API"),
         make_help_item("uuidgen", "Generate random UUID"),
+        make_help_item("rdp",   "Connect to RDP"),
     ];
 
     # additional user commands to show

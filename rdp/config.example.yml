@@ -1,0 +1,4 @@
+- title: "RDP 1"
+  command: "xfreerdp 1"
+- title: "RDP 2"
+  command: "xfreerdp 2"

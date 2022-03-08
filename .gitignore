@@ -6,6 +6,7 @@ __pycache__
 
 # plugin user data
 /help/commands.yml
+/rdp/config.yml
 
 # private plugins (don't commit)
 /mpv/
