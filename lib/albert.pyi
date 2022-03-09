@@ -114,7 +114,14 @@ class Item(ItemBase):
 
         # The actions of the item.
         actions: list[ActionBase],
-    ) -> Item: ...
+    ) -> Item:
+        self.id = id;
+        self.icon = icon;
+        self.text = text;
+        self.subtext = subtext;
+        self.completion = completion;
+        self.urgency = urgency;
+        self.actions = actions;
 
     def addAction(action: Action) -> None:
         """Add an action to the item."""
