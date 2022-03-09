@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-void copyToClipboard(const QByteArray &content)
+void copyToClipboard(const QByteArray &content, bool passwordManagerHint = false)
 {
     const auto clipboard = QGuiApplication::clipboard();
     if (!clipboard)
@@ -18,25 +18,48 @@ void copyToClipboard(const QByteArray &content)
 
     const QString text = QString::fromUtf8(content);
 
-//     mime->setText(text);
-//     mime->setData("x-kde-passwordManagerHint", QByteArrayLiteral("secret"));
-//     clipboard->setMimeData(mime, QClipboard::Clipboard);
-// 
-//     if (clipboard->supportsSelection())
-//     {
-//         clipboard->setMimeData(mime, QClipboard::Selection);
-//     }
+    // copy with password manager hint enabled, clipboard manager may ignore or hide this entry
+    if (passwordManagerHint)
+    {
+        mime->setText(text);
+        mime->setData("x-kde-passwordManagerHint", QByteArrayLiteral("secret"));
+        clipboard->setMimeData(mime, QClipboard::Clipboard);
 
-    clipboard->setText(text);
+        if (clipboard->supportsSelection())
+        {
+            clipboard->setMimeData(mime, QClipboard::Selection);
+        }
+    }
+
+    // copy as plaintext, revealing the content to clipboard managers
+    else
+    {
+        clipboard->setText(text);
+    }
+}
+
+int main_daemon(QGuiApplication &a)
+{
+    // TODO:
+    return 5;
 }
 
 int main(int argc, char **argv)
 {
     QGuiApplication a(argc, argv);
+
+    // run in daemon mode
+    // if (argc > 1 && std::strcmp(argv[1], "--daemon") == 0)
+    // {
+    //     return main_daemon(a);
+    // }
+
+    // perform singleshot execution and quit
     QTimer shutdownTimer;
 
     QByteArray content;
 
+    // read from stdin until EOF
     while (!std::cin.eof())
     {
         char arr[1024];
@@ -45,11 +68,14 @@ int main(int argc, char **argv)
         content.append(arr, s);
     }
 
+    // copy received content to clipboard if it isn't empty
     if (content.size() > 0)
     {
-        copyToClipboard(content);
+        // need to copy without password manager hint, so clipboard content isn't lost on program termination
+        copyToClipboard(content, false);
     }
 
+    // forcefully process Qt events
     a.processEvents();
 
     // give the clipboard manager enough time to mirror the data
