@@ -1,5 +1,8 @@
 import sys;
 import libvirt;
+from contextlib import closing;
+
+URI = "qemu:///system";
 
 class VirtManager:
     def __init__(self):
@@ -11,7 +14,7 @@ class VirtManager:
 
     def open(self):
         try:
-            self._conn = libvirt.open("qemu:///system");
+            self._conn = libvirt.open(URI);
         except libvirt.libvirtError as e:
             self._conn = None;
             print(repr(e), file=sys.stderr);
@@ -84,3 +87,11 @@ class VirtManager:
         except libvirt.libvirtError as e:
             print(repr(e), file=sys.stderr);
             return False;
+
+def bootVM(uuid: str) -> bool:
+    with closing(VirtManager()) as virt:
+        return virt.bootVM(uuid=uuid, pretend=False);
+
+def shutdownVM(uuid: str) -> bool:
+    with closing(VirtManager()) as virt:
+        return virt.shutdownVM(uuid=uuid, pretend=False);

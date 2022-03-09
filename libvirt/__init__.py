@@ -44,9 +44,26 @@ def listVMs(filter: str = None) -> list[Item]:
     items = [];
     with closing(virtmanager.VirtManager()) as virt:
         for domain in virt.getDomainsSorted():
+
+            # if filter is given, ignore domains which don't contain the filter substring in their name
             if filter != None:
                 if not filter in domain["name"]:
                     continue;
+
+            # base actions for all domains
+            actions = [
+                # virt-viewer -c URI -a DOMAIN_NAME
+                ProcAction(text="virt-viewer", commandline=[
+                    "virt-viewer", "-c", virtmanager.URI, "-a", domain["name"]]),
+            ];
+
+            # actions for only booted domains
+            if domain["active"]:
+                actions.append(FuncAction(text="Send shutdown request", callable=lambda uuid=domain["uuid"]: virtmanager.shutdownVM(uuid)));
+
+            # actions for only inactive domains
+            else:
+                actions.append(FuncAction(text="Boot", callable=lambda uuid=domain["uuid"]: virtmanager.bootVM(uuid)));
 
             items.append(Item(
                 id=f"libvirt_{domain['uuid']}",
@@ -55,7 +72,7 @@ def listVMs(filter: str = None) -> list[Item]:
                 subtext=domainSubtext(domain),
                 #completion="",
                 urgency=ItemBase.Normal,
-                actions=[],
+                actions=actions,
             ));
     return items;
 
