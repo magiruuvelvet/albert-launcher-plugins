@@ -3,7 +3,7 @@
 Easily access your videos from Albert launcher.
 
 This plugin has no trigger and always shows results as you type.
-Lookup is case insensivite. The `rootDir` string is not included when
+Lookup is case insensitive. The `rootDir` string is not included when
 searching for files.
 
 ## Features
