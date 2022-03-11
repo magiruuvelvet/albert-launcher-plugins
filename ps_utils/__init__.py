@@ -3,14 +3,13 @@
 """PS Utils"""
 
 from albert import *;
-import enum;
-from typing import Union
 
 import os;
 from pydoc import importfile;
 module_path = os.path.realpath(os.path.dirname(__file__));
 
 ps = importfile(module_path + "/ps.py");
+commandlib = importfile(module_path + "/../lib/commandlib.py");
 
 __title__ = "PS Utils";
 __version__ = "0.0.1";
@@ -20,47 +19,18 @@ __authors__ = "マギルゥーベルベット";
 # IDEA: get cpu usage and use -1,-2,-3,-4 variants of this icon
 iconPath = iconLookup("task-process-0");
 
-class Command(enum.Enum):
-    Find  = "find";
-    Debug = "debug";
-
-def parse(query: str) -> Union[dict, str]:
-    query = query.strip();
-
-    comm = find_command(query);
-    if comm:
-        return comm;
-    else:
-        return query;
-
-def make_help_item(command: Command, info: str) -> Item:
-    return Item(
-        id=__title__, icon=iconPath,
-        text=command.value, subtext=info,
-        completion=f"{__triggers__}{command.value} ",
-        urgency=ItemBase.Normal, actions=[]);
-
-commands = [];
+commands = commandlib.CommandRegistry();
 
 def initialize():
     global commands;
-    commands = [
-        dict(command=Command.Find,  item=make_help_item(Command.Find,  "Search for processes")),
-        #dict(command=Command.Debug, item=make_help_item(Command.Debug, "Debug command")),
-    ];
 
-def find_command(query: str) -> dict:
-    for comm in commands:
-        if query.startswith(comm["command"].value + " "):
-            return dict(command=comm["command"], query=query[len(comm["command"].value)+1:].strip());
-    return None;
-
-def find_matching_commands(query: str) -> list[Item]:
-    results = [];
-    for comm in commands:
-        if comm["command"].value.startswith(query):
-            results.append(comm["item"]);
-    return results;
+    for i in [
+        {"title": "find",  "desc": "Search for processes"},
+        #{"title": "debug", "desc": "Debug command"},
+    ]:
+        commands.addCommand(commandlib.Command(
+            command=i["title"], description=i["desc"],
+            completionPrefix="ps ", iconPath=iconPath, id=__title__));
 
 def handleQuery(albertQuery: Query) -> list[Item]:
     # check if the query has a trigger
@@ -68,18 +38,18 @@ def handleQuery(albertQuery: Query) -> list[Item]:
         return [];
 
     # parse query
-    query = parse(albertQuery.string);
+    query = commands.parse(albertQuery.string);
 
     # return available commands
     if type(query) == str:
-        return find_matching_commands(query);
+        return commands.findMatchingCommands(query);
 
     albertQuery.disableSort();
 
     albertItems = [];
 
-    if query["command"] == Command.Find:
-        for proc in ps.filter_by_query(query["query"]):
+    if query.command.command == "find":
+        for proc in ps.filter_by_query(query.query):
             text = f"{proc['pid']} {proc['command']}";
             albertItems.append(Item(
                 id=__title__,
@@ -92,5 +62,15 @@ def handleQuery(albertQuery: Query) -> list[Item]:
                     ClipAction(text="Copy to clipboard", clipboardText=f"{text}\n{proc['cmdline']}\n"),
                 ]
             ));
+
+    # elif query.command.command == "debug":
+    #     albertItems.append(Item(
+    #         id=__title__,
+    #         icon=iconPath,
+    #         subtext="hello world",
+    #         text="example text",
+    #         urgency=ItemBase.Normal,
+    #         actions=[],
+    #     ));
 
     return albertItems;
