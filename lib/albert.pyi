@@ -3,7 +3,8 @@
 ### https://github.com/albertlauncher/plugins/tree/master/python
 ###
 
-import enum;
+from enum import Enum;
+from typing import Union;
 
 # Optional [string]. The docstring of the module is used as description of the extension.
 # This string will be displayed to the user.
@@ -18,35 +19,35 @@ __version__: str;
 
 # Optional [string, list of strings]. If this extension should be run exclusively,
 # this variable has to hold the trigger that causes the extension to be executed.
-__triggers__: str|list[str];
+__triggers__: Union[str, list[str]];
 
 # Optional [string, list of strings]. This variable should hold the name of the author of the extension.
-__authors__: str|list[str];
+__authors__: Union[str, list[str]];
 
 # Optional [string, list of strings]. This string should contain any dependencies the extension needs to be used.
 # The name of the dependency has to match the name of the executable in $PATH.
-__exec_deps__: str|list[str];
+__exec_deps__: Union[str, list[str]];
 
 # Optional [string, list of strings]. This string should contain any dependencies the extension needs to be used.
 # The name of the dependency has to match the name of the package in the PyPI.
-__py_deps__: str|list[str];
+__py_deps__: Union[str, list[str]];
 
-def handleQuery(query: Query) -> list[Item]:
-    """
-    MANDATORY. This is the crucial part of a Python module. When the user types a query,
-    this function is called with a query object representing the current query execution.
-    This function should return a list of Item objects. See the Item class section below.
-    """
+# def handleQuery(query: Query) -> list[Item]:
+#     """
+#     MANDATORY. This is the crucial part of a Python module. When the user types a query,
+#     this function is called with a query object representing the current query execution.
+#     This function should return a list of Item objects. See the Item class section below.
+#     """
 
-def initialize() -> None:
-    """
-    Optional. This function is called when the extension is loaded. Although you could technically
-    run your initialization code in global scope, it is recommended to initialize your extension
-    in this function. If your extension fails to initialize you can raise exceptions here, which are displayed to the user.
-    """
+# def initialize() -> None:
+#     """
+#     Optional. This function is called when the extension is loaded. Although you could technically
+#     run your initialization code in global scope, it is recommended to initialize your extension
+#     in this function. If your extension fails to initialize you can raise exceptions here, which are displayed to the user.
+#     """
 
-def finalize() -> None:
-    """Optional. This function is called when the extension is unloaded."""
+# def finalize() -> None:
+#     """Optional. This function is called when the extension is unloaded."""
 
 class Query:
     """
@@ -71,26 +72,26 @@ class ActionBase:
 
 class ClipAction(ActionBase):
     """This class copies the given text to the clipboard on activation."""
-    def __init__(self, text: str, clipboardText: str) -> ClipAction: ...
+    def __init__(self, text: str, clipboardText: str) -> None: ...
 
 class UrlAction(ActionBase):
     """This class opens the given URL with the systems default URL handler for the scheme of the URL on activation."""
-    def __init__(self, text: str, url: str) -> UrlAction: ...
+    def __init__(self, text: str, url: str) -> None: ...
 
 class ProcAction(ActionBase):
     """This class executes the given commandline as a detached process on activation. Optionally the working directory of the process can be set."""
-    def __init__(self, text: str, commandline: list[str], cwd: str = None) -> ProcAction: ...
+    def __init__(self, text: str, commandline: list[str], cwd: str = None) -> None: ...
 
 class TermAction(ActionBase):
     """This class executes the given commandline in the terminal set in the preferences. Optionally the working directory of the process can be set."""
-    def __init__(self, text: str, commandline: list[str], cwd: str = None) -> TermAction: ...
+    def __init__(self, text: str, commandline: list[str], cwd: str = None) -> None: ...
 
 class FuncAction(ActionBase):
     """This class is a general purpose action. On activation the callable is executed."""
-    def __init__(self, text: str, callable: callable = lambda: None) -> FuncAction: ...
+    def __init__(self, text: str, callable: callable = lambda: None) -> None: ...
 
 class ItemBase:
-    class Urgency(enum.Enum):
+    class Urgency(Enum):
         Normal = None;
         Alert = None;
         Notification = None;
@@ -114,7 +115,7 @@ class Item(ItemBase):
 
         # The actions of the item.
         actions: list[ActionBase],
-    ) -> Item:
+    ) -> None:
         self.id = id;
         self.icon = icon;
         self.text = text;
@@ -123,7 +124,7 @@ class Item(ItemBase):
         self.urgency = urgency;
         self.actions = actions;
 
-    def addAction(action: Action) -> None:
+    def addAction(action: ActionBase) -> None:
         """Add an action to the item."""
 
 def debug(obj) -> None: ...
@@ -131,7 +132,7 @@ def info(obj) -> None: ...
 def warning(obj) -> None: ...
 def critical(obj) -> None: ...
 
-def iconLookup(iconName: str|list[str]) -> str:
+def iconLookup(iconName: Union[str, list[str]]) -> str:
     """Perform xdg icon lookup and return a path. Empty if nothing found."""
 
 def cacheLocation() -> str:
