@@ -14,6 +14,8 @@ class Command:
         self.iconPath: str = iconPath;
         self.id: str = id;
 
+        self.requireSpaceAfterToMatch: bool = True;
+
     def make_help_item(self) -> Item:
         return Item(
             id=self.id, icon=self.iconPath,
@@ -22,15 +24,17 @@ class Command:
             urgency=ItemBase.Normal, actions=[]);
 
 class MatchedCommand:
-    def __init__(self, command: Command, query: str) -> None:
-        self.command = command;
-        self.query = query;
+    def __init__(self, command: Command, query: str, hasSpace: bool = True) -> None:
+        self.command: Command = command;
+        self.query: str = query;
+        self.hasSpace: bool = hasSpace;
 
 class CommandRegistry:
     def __init__(self) -> None:
         self.commands: list[Command] = [];
 
-    def addCommand(self, command: Command):
+    def addCommand(self, command: Command, requireSpaceAfterToMatch: bool = True):
+        command.requireSpaceAfterToMatch = requireSpaceAfterToMatch;
         self.commands.append(command);
 
     def parse(self, query: str) -> Union[MatchedCommand, str]:
@@ -44,8 +48,12 @@ class CommandRegistry:
 
     def __findCommand(self, query: str) -> Union[MatchedCommand, None]:
         for comm in self.commands:
-            if query.startswith(comm.command + " "):
-                return MatchedCommand(comm, query[len(comm.command)+1:].strip());
+            if comm.requireSpaceAfterToMatch:
+                if query.startswith(comm.command + " "):
+                    return MatchedCommand(comm, query[len(comm.command)+1:].strip(), True);
+            else:
+                if query == comm.command or query.startswith(comm.command + " "):
+                    return MatchedCommand(comm, query[len(comm.command)+1:].strip(), False);
         return None;
 
     def findMatchingCommands(self, query: str) -> list[Item]:
@@ -90,5 +98,18 @@ if __name__ == "__main__":
     m: MatchedCommand = registry.parse("help args a");
     assert(m.command.command == "help");
     assert(m.query == "args a");
+
+    registry.addCommand(Command("help2", "this is another help"), False);
+
+    assert(type(registry.parse("help2")) == MatchedCommand);
+    m: MatchedCommand = registry.parse("help2");
+    assert(m.command.command == "help2");
+    assert(m.query == "");
+
+    m: MatchedCommand = registry.parse("help2 args ");
+    assert(m.command.command == "help2");
+    assert(m.query == "args");
+
+    assert(type(registry.parse("help2a")) == str);
 
     print("DONE!");
