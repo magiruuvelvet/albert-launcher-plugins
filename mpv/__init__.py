@@ -105,8 +105,14 @@ def handleQuery(albertQuery: Query) -> list[Item]:
 
     albertItems = [];
 
+    # split query at whitespaces
+    query = query.split();
+    if (len(query) == 0):
+        return [];
+
     for file in mpv_fileList:
-        if query in file["nameFullLower"]:
+        #if query in file["nameFullLower"]:
+        if all(x in file["nameFullLower"] for x in query):
             albertItems.append(make_mpv_item(file));
 
     return albertItems;

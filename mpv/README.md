@@ -11,6 +11,8 @@ searching for files.
  - Open in mpv (default action)
  - Append to playlist of existing instance (requires `input-ipc-server` to be enabled in mpv)
 
+ - Get random file from library: `mpv random`
+
 ## Configuration
 
 Stored in `{configLocation()}/mpv/config.yml` (`$HOME/.config/albert/mpv/config.yml`).
