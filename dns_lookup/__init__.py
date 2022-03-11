@@ -3,6 +3,7 @@
 """DNS Lookup"""
 
 from albert import *;
+from time import sleep;
 import dns.resolver;
 
 import os;
@@ -27,6 +28,8 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     if not albertQuery.isTriggered:
         return [];
 
+    sleep(0.5);
+
     # parse query
     query = parse(albertQuery.string);
     if len(query) == 0:
@@ -35,7 +38,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     albertQuery.disableSort();
 
     domain = query[1];
-    rtype = query[0];
+    rtype = query[0].upper();
 
     subtext = "DNS: " + rtype + " " + domain;
 
