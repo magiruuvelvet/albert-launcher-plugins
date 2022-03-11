@@ -10,6 +10,7 @@ __pycache__
 
 # private plugins (don't commit)
 /jira/
+/help_info/
 
 # 3rd party plugins (don't commit, don't mirror)
 # (nothing yet)

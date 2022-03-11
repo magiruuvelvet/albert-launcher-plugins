@@ -5,6 +5,7 @@
 from albert import *;
 import yaml;
 import socket;
+from random import randrange;
 
 import os;
 from pydoc import importfile;
@@ -68,6 +69,20 @@ def append(file: str) -> None:
     finally:
         mpv_socket.close();
 
+def make_mpv_item(file: str) -> Item:
+    return Item(
+        id=__title__,
+        icon=iconPath,
+        subtext=file["nameFull"],
+        text=file["nameBase"],
+        completion=file["nameFull"],
+        urgency=ItemBase.Normal,
+        actions=[
+            ProcAction(text="再生", commandline=["mpv", file["path"]]),
+            FuncAction(text="プレイリストに追加", callable=lambda file=file["path"]: append(file)),
+        ]
+    );
+
 def handleQuery(albertQuery: Query) -> list[Item]:
     # parse query
     query = parse(albertQuery.string);
@@ -83,21 +98,15 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     if len(mpv_fileList) == 0:
         return [];
 
+    # random item requested
+    if query.startswith("mpv random"):
+        random_index = randrange(len(mpv_fileList))
+        return make_mpv_item(mpv_fileList[random_index]);
+
     albertItems = [];
 
     for file in mpv_fileList:
         if query in file["nameFullLower"]:
-            albertItems.append(Item(
-                id=__title__,
-                icon=iconPath,
-                subtext=file["nameFull"],
-                text=file["nameBase"],
-                completion=file["nameFull"],
-                urgency=ItemBase.Normal,
-                actions=[
-                    ProcAction(text="再生", commandline=["mpv", file["path"]]),
-                    FuncAction(text="プレイリストに追加", callable=lambda file=file["path"]: append(file)),
-                ]
-            ));
+            albertItems.append(make_mpv_item(file));
 
     return albertItems;
