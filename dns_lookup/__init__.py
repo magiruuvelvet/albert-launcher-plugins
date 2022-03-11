@@ -18,7 +18,7 @@ __authors__ = "マギルゥーベルベット";
 iconPath = iconLookup("internet-services");
 
 def parse(query: str) -> list[str]:
-    query = query.split(maxsplit=1);
+    query = query.split();
     if len(query) != 2:
         return [];
     return query[0:2];
