@@ -54,6 +54,7 @@ def initialize():
         make_help_item("uuidgen", "Generate random UUID"),
         make_help_item("rdp",   "Connect to RDP"),
         make_help_item("virsh", "Virtual Machine Manager"),
+        make_help_item("docker", "Docker"),
     ];
 
     # additional user commands to show

@@ -30,7 +30,7 @@ def initialize():
     ]:
         commands.addCommand(commandlib.Command(
             command=i["title"], description=i["desc"],
-            completionPrefix="ps ", iconPath=iconPath, id=__title__));
+            completionPrefix=__triggers__, iconPath=iconPath, id=__title__));
 
 def handleQuery(albertQuery: Query) -> list[Item]:
     # check if the query has a trigger
