@@ -18,6 +18,7 @@ def get_all_files(rootdir: str) -> list[str]:
 
             fileList.append(dict(
                 path=path,
+                dir=root,
                 nameBase=os.path.basename(os.path.splitext(file)[0]),
                 nameFull=basename,
                 nameFullLower=basename.lower(),

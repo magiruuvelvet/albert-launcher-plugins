@@ -80,6 +80,7 @@ def make_mpv_item(file: str) -> Item:
         actions=[
             ProcAction(text="再生", commandline=["mpv", file["path"]]),
             FuncAction(text="プレイリストに追加", callable=lambda file=file["path"]: append(file)),
+            ProcAction(text="ディレクトリを開く", commandline=["xdg-open", file["dir"]]),
         ]
     );
 
