@@ -18,3 +18,5 @@ containers.sort(key=lambda container: sortByRunning(container.status));
 
 for container in containers:
     print(container.name, container.attrs["Config"]["Image"], container.status);
+    #print(getattr(container, "start"));
+    #print(getattr(container, "stop"));
