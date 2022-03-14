@@ -28,12 +28,20 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     if not albertQuery.isTriggered:
         return [];
 
-    sleep(0.5);
-
     # parse query
     query = parse(albertQuery.string);
+
+    # when command didn't matched, show usage
     if len(query) == 0:
-        return [];
+        return [Item(
+            id=__title__,
+            icon=iconPath,
+            text=__title__,
+            subtext="<b>Usage:</b> TYPE domain",
+            urgency=ItemBase.Notification,
+        )];
+
+    sleep(0.5);
 
     albertQuery.disableSort();
 
