@@ -3,6 +3,7 @@
 """PS Utils"""
 
 from albert import *;
+import signal;
 
 import os;
 from pydoc import importfile;
@@ -51,6 +52,34 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     if query.command.command == "find":
         for proc in ps.filter_by_query(query.query):
             text = f"{proc['pid']} {proc['command']}";
+
+            # make text italic and add uid when user foreign process
+            if proc["owned_by_user"] == False:
+                text = f"<i>{text} ({proc['uid']} {ps.get_username_by_uid(proc['uid'])})</i>";
+
+            # TODO: change clipboardText to make it more useful?
+            actions = [
+                ClipAction(text="Copy to clipboard", clipboardText=f"{text}\n{proc['cmdline']}\n"),
+            ];
+
+            # add signal sending actions when process is owned by the current user
+            if proc["owned_by_user"] == True:
+                def make_sig_action(signum: signal.Signals) -> FuncAction:
+                    return FuncAction(
+                        text=f"Send {signum.name}",
+                        callable=lambda signum=signum, pid=proc["pid"]: ps.send_signal(pid, signum),
+                    );
+
+                # create signal actions
+                for signum in [
+                    signal.SIGINT,
+                    signal.SIGTERM,
+                    signal.SIGKILL,
+                    signal.SIGUSR1,
+                    signal.SIGUSR2,
+                ]:
+                    actions.append(make_sig_action(signum));
+
             albertItems.append(Item(
                 id=__title__,
                 icon=iconPath,
@@ -58,9 +87,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
                 text=text,
                 completion=__triggers__,
                 urgency=ItemBase.Normal,
-                actions=[
-                    ClipAction(text="Copy to clipboard", clipboardText=f"{text}\n{proc['cmdline']}\n"),
-                ]
+                actions=actions,
             ));
 
     # elif query.command.command == "debug":

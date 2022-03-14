@@ -1,6 +1,6 @@
 from ps import *;
 
-import enum;
+import os;
 
 print(filter_by_query(("discord")));
 print(filter_by_query(("kde")));
@@ -11,7 +11,5 @@ is_dict = type({}) == dict;
 
 print(is_str, is_dict);
 
-class Command(enum.Enum):
-    Find = "find";
-
-print(Command.Find.value);
+print(get_username_by_uid(os.getuid()));
+print(get_username_by_uid(9999)); # non-existend user, return uid as string instead
