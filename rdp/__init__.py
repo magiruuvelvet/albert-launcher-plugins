@@ -44,6 +44,7 @@ def make_rdp_item(title: str, command: str) -> Item:
         urgency=ItemBase.Normal,
         actions=[
             ProcAction(text="Connect", commandline=["sh", "-c", command]),
+            ClipAction(text="Copy command to clipboard", clipboardText=command),
         ],
     );
 
