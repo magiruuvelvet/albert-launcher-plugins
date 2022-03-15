@@ -51,23 +51,33 @@ def initialize():
         mpv_fileList = indexer.get_all_files(rootDir);
         info(f"Found {len(mpv_fileList)} media files.");
 
-def append(file: str) -> None:
+def send_command(command: str):
     if socketFile == None or len(socketFile) == 0:
         warning("mpv socket file not specified, append feature not available.");
         return;
 
-    # escape path for "loadfile" command
-    file = file.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n");
-    file = "\"" + file + "\"";
-
     try:
         mpv_socket = socket.socket(socket.AF_UNIX);
         mpv_socket.connect(socketFile);
-        mpv_socket.send(("raw loadfile " + file + " append\n").encode("utf-8"));
+        mpv_socket.send(command.encode("utf-8"));
     except ConnectionError:
         pass;
     finally:
         mpv_socket.close();
+
+def append(file: str) -> None:
+    # escape path for "loadfile" command
+    file = file.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n");
+    file = "\"" + file + "\"";
+
+    send_command("raw loadfile " + file + " append\n");
+
+def play():
+    command = '{ "command": ["set_property", "pause", false] }';
+    send_command(f"{command}\n");
+def pause():
+    command = '{ "command": ["set_property", "pause", true] }';
+    send_command(f"{command}\n");
 
 def make_mpv_item(file: str) -> Item:
     return Item(
@@ -80,8 +90,20 @@ def make_mpv_item(file: str) -> Item:
         actions=[
             ProcAction(text="再生", commandline=["mpv", file["path"]]),
             FuncAction(text="プレイリストに追加", callable=lambda file=file["path"]: append(file)),
+            ProcAction(text="ループ再生", commandline=["mpv", "--loop", file["path"]]),
             ProcAction(text="ディレクトリを開く", commandline=["xdg-open", file["dir"]]),
         ]
+    );
+
+def make_playback_item(title: str, function: callable) -> Item:
+    return Item(
+        id=__title__,
+        icon=iconPath,
+        text=title,
+        urgency=ItemBase.Notification,
+        actions=[
+            FuncAction(text=title, callable=function),
+        ],
     );
 
 def handleQuery(albertQuery: Query) -> list[Item]:
@@ -103,6 +125,12 @@ def handleQuery(albertQuery: Query) -> list[Item]:
     if query.startswith("mpv random"):
         random_index = randrange(len(mpv_fileList))
         return make_mpv_item(mpv_fileList[random_index]);
+    # play requested
+    if query == "mpv play":
+        return make_playback_item("Play", play);
+    # pause requested
+    if query == "mpv pause":
+        return make_playback_item("Pause", pause);
 
     albertItems = [];
 
