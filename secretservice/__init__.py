@@ -14,7 +14,7 @@ secretservice = importfile(module_path + "/secretservice.py");
 
 __title__ = "Secret Service";
 __version__ = "0.0.1";
-__triggers__ = "pwd ";
+__triggers__ = ["pwd ", "pass "];
 __authors__ = "マギルゥーベルベット";
 
 iconPath = iconLookup("password-copy");

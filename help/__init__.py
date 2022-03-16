@@ -51,6 +51,7 @@ def initialize():
         make_help_item("kiten", "Query Kiten Japanese Dictionary"),
         make_help_item("ps",    "Process Utilities"),
         make_help_item("pwd",   "Query D-Bus Secret Service API"),
+        make_help_item("pass",  "Query D-Bus Secret Service API"),
         make_help_item("uuidgen", "Generate random UUID"),
         make_help_item("rdp",   "Connect to RDP"),
         make_help_item("virsh", "Virtual Machine Manager"),
