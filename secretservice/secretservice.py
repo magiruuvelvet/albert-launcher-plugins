@@ -34,7 +34,8 @@ def get_password(item_path: str) -> str:
 def copy(item_path: str) -> None:
     try:
         # FIXME: use libX11 or something else, using subprocess for this is disgusting
-        p = subprocess.Popen(clipboard_tool_args, stdin=subprocess.PIPE, close_fds=True);
+        p = subprocess.Popen(clipboard_tool_args,
+            stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, close_fds=True);
         p.communicate(input=get_password(item_path));
 
     except OSError as e: # dbus connection lost (get_password) or Popen failed
