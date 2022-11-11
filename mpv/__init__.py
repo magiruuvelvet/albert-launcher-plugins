@@ -6,6 +6,7 @@ from albert import *;
 import yaml;
 import socket;
 from random import randrange;
+from distutils.dir_util import mkpath;
 
 import os;
 from pydoc import importfile;
@@ -18,6 +19,10 @@ __version__ = "0.0.1";
 __authors__ = "マギルゥーベルベット";
 
 iconPath = iconLookup("mpv");
+cachePath = None;
+
+mpv_bin = "mpv";
+mpv_args = ["--player-operation-mode=pseudo-gui", "--profile=albert-launcher"];
 
 configdir = os.path.join(configLocation(), "mpv");
 
@@ -34,6 +39,11 @@ def initialize():
     rootDir = None;
     global socketFile;
 
+    # ensure cache location for thumbnails exist
+    global cachePath;
+    cachePath = f"{cacheLocation()}/mpvthumbnails";
+    mkpath(cachePath);
+
     if not os.path.exists(configdir):
         os.mkdir(configdir);
     configfile = configdir + "/config.yml";
@@ -48,7 +58,7 @@ def initialize():
 
     if rootDir != None and len(rootDir) > 1:
         info(f"Scanning media files in {rootDir}...");
-        mpv_fileList = indexer.get_all_files(rootDir);
+        mpv_fileList = indexer.get_all_files(rootDir, cachePath);
         info(f"Found {len(mpv_fileList)} media files.");
 
 def send_command(command: str):
@@ -82,15 +92,15 @@ def pause():
 def make_mpv_item(file: str) -> Item:
     return Item(
         id=__title__,
-        icon=iconPath,
+        icon=file["iconPath"] if file["iconPath"] != None else iconPath,
         subtext=file["nameFull"],
         text=file["nameBase"],
         completion=file["nameFull"],
         urgency=ItemBase.Normal,
         actions=[
-            ProcAction(text="再生", commandline=["mpv", file["path"]]),
+            ProcAction(text="再生", commandline=[mpv_bin, *mpv_args, file["path"]]),
             FuncAction(text="プレイリストに追加", callable=lambda file=file["path"]: append(file)),
-            ProcAction(text="ループ再生", commandline=["mpv", "--loop", file["path"]]),
+            ProcAction(text="ループ再生", commandline=[mpv_bin, *mpv_args, "--loop", file["path"]]),
             ProcAction(text="ディレクトリを開く", commandline=["xdg-open", file["dir"]]),
         ]
     );
