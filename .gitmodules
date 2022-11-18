@@ -1,3 +1,6 @@
 [submodule "lib/cmake/modules"]
 	path = lib/cmake/modules
 	url = https://github.com/magiruuvelvet/shared-cmake-modules.git
+[submodule "unicode-tools/deps/unicode_charnames"]
+	path = unicode-tools/deps/unicode_charnames
+	url = https://github.com/mlodewijck/unicode_charnames
