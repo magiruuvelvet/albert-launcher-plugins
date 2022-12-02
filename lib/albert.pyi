@@ -4,7 +4,7 @@
 ###
 
 from enum import Enum;
-from typing import Union;
+from typing import Union, Callable, Optional;
 
 # Optional [string]. The docstring of the module is used as description of the extension.
 # This string will be displayed to the user.
@@ -64,7 +64,7 @@ class Query:
     # Indicates that this query has been triggered.
     isTriggered: bool;
 
-    def disableSort() -> None:
+    def disableSort(self) -> None:
         """Disables sorting of result items. Preserving the order of insertion."""
 
 class ActionBase:
@@ -80,15 +80,15 @@ class UrlAction(ActionBase):
 
 class ProcAction(ActionBase):
     """This class executes the given commandline as a detached process on activation. Optionally the working directory of the process can be set."""
-    def __init__(self, text: str, commandline: list[str], cwd: str = None) -> None: ...
+    def __init__(self, text: str, commandline: list[str], cwd: Optional[str] = None) -> None: ...
 
 class TermAction(ActionBase):
     """This class executes the given commandline in the terminal set in the preferences. Optionally the working directory of the process can be set."""
-    def __init__(self, text: str, commandline: list[str], cwd: str = None) -> None: ...
+    def __init__(self, text: str, commandline: list[str], cwd: Optional[str] = None) -> None: ...
 
 class FuncAction(ActionBase):
     """This class is a general purpose action. On activation the callable is executed."""
-    def __init__(self, text: str, callable: callable = lambda: None) -> None: ...
+    def __init__(self, text: str, callable: Callable = lambda: None) -> None: ...
 
 class ItemBase:
     class Urgency(Enum):
@@ -102,19 +102,19 @@ class ItemBase:
 class Item(ItemBase):
     def __init__(self,
         id: str,        # The identifier string of the item. It is used for ranking algorithms and should not be empty.
-        icon: str,      # The path of the icon displayed in the item.
-        text: str,      # The primary text of the item.
-        subtext: str,   # The secondary text of the item. This text should have informative character.
+        icon: Optional[str] = None,    # The path of the icon displayed in the item.
+        text: Optional[str] = None,    # The primary text of the item.
+        subtext: Optional[str] = None, # The secondary text of the item. This text should have informative character.
 
         # The completion string of the item. This string will be used to replace the input line
         # when the user hits the Tab key on an item. Note that the semantics may vary depending on the context.
-        completion: str,
+        completion: Optional[str] = None,
 
         # The urgency of the item. Note that the Urgency enum is defined in the ItemBase class. See the Urgency enum.
-        urgency: ItemBase.Urgency,
+        urgency: Optional[ItemBase.Urgency] = None,
 
         # The actions of the item.
-        actions: list[ActionBase],
+        actions: Optional[list[ActionBase]] = None,
     ) -> None:
         self.id = id;
         self.icon = icon;
@@ -124,7 +124,7 @@ class Item(ItemBase):
         self.urgency = urgency;
         self.actions = actions;
 
-    def addAction(action: ActionBase) -> None:
+    def addAction(self, action: ActionBase) -> None:
         """Add an action to the item."""
 
 def debug(obj) -> None: ...
