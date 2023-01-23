@@ -11,6 +11,7 @@ from pydoc import importfile;
 module_path = os.path.realpath(os.path.dirname(__file__));
 
 secretservice = importfile(module_path + "/secretservice.py");
+wallet_name = None;
 
 __title__ = "Secret Service";
 __version__ = "0.0.1";
@@ -19,6 +20,20 @@ __authors__ = "マギルゥーベルベット";
 
 iconPath = iconLookup("password-copy");
 iconError = iconLookup("dialog-error");
+
+def initialize() -> None:
+    config_location = os.path.join(configLocation(), "secrets-wallet");
+    global wallet_name;
+    try:
+        with open(config_location, "r") as f:
+            wallet_name = f.read().strip();
+    except IOError:
+        pass;
+
+    # attempt to unlock the collection on initialization
+    with closing(secretstorage.dbus_init()) as dbus:
+        collection = secretservice.find_collection(dbus, wallet_name);
+        collection.unlock();
 
 def parse(query: str) -> str:
     return query.strip();
@@ -44,7 +59,7 @@ def make_secret_items(collection: secretstorage.Collection, query: str) -> list[
             subtext="Secret Service",
             urgency=ItemBase.Normal,
             actions=[
-                FuncAction(text="Copy to clipboard", callable=lambda item_path=match["item_path"]: secretservice.copy(item_path)),
+                FuncAction(text="Copy to clipboard", callable=lambda item_path=match["item_path"]: secretservice.copy(wallet_name, item_path)),
             ],
         ));
 
@@ -64,7 +79,7 @@ def handleQuery(albertQuery: Query) -> list[Item]:
 
     try:
         with closing(secretstorage.dbus_init()) as dbus:
-            collection = secretstorage.get_default_collection(dbus);
+            collection = secretservice.find_collection(dbus, wallet_name);
             return make_secret_items(collection, query);
     except Exception as e:
         return [make_error_item(str(e))];

@@ -4,7 +4,10 @@ from contextlib import closing;
 
 try:
     with closing(secretstorage.dbus_init()) as dbus:
-        collection = secretstorage.get_default_collection(dbus);
+        collection = secretservice.find_collection(dbus, "kbd-launcher");
+        collection.unlock();
+
+        print(collection.get_label());
 
         matches = secretservice.query(collection, "ssh");
         for item in matches:
@@ -14,8 +17,10 @@ try:
         for item in matches:
             print(item);
 
+        matches = secretservice.query(collection, "dev");
         if len(matches) > 0:
-            secretservice.copy(matches[0]["item_path"]);
+            print(matches[0]);
+            secretservice.copy("kbd-launcher", matches[0]["item_path"]);
 
 except Exception as e:
     print(str(e));
