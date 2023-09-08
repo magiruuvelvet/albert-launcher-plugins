@@ -56,6 +56,7 @@ def initialize():
         make_help_item("rdp",   "Connect to RDP"),
         make_help_item("virsh", "Virtual Machine Manager"),
         make_help_item("docker", "Docker"),
+        make_help_item("edit",  "Open file in editor"),
     ];
 
     # additional user commands to show
