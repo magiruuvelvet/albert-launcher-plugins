@@ -22,6 +22,7 @@ rdpItems = [];
 
 ALLOWED_COMMANDS = [
     "xfreerdp",
+    "wlfreerdp",
     "rdesktop",
     "remmina",
     "virt-viewer",
